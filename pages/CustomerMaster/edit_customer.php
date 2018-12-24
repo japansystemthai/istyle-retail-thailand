@@ -48,7 +48,7 @@
                   <div class="input-group-addon">
                     <i class="fa fa-calendar"></i>
                   </div>
-                 <input type="date" class="form-control" id="birth" name="birth" value="<?php echo isset($_POST["birth"]) ? $_POST["birth"] : ''; ?>" style="width:85%" required >
+                 <input type="text" class="form-control" id="birth" name="birth" value="<?php echo isset($_POST["birth"]) ? $_POST["birth"] : ''; ?>" style="width:85%" required >
                 </div>
                 <!-- /.input group -->
               </div>
@@ -114,7 +114,8 @@
                    <?php
                       $sqlRank = "select RANK_CODE ,RANK_NAME
                             from M_RANK
-                            order by RANK_CODE";
+                            where DELETE_FLG = '0'
+                            order by POINT_MAGNIFICATION";
                       $resultRank = mysqli_query($conn, $sqlRank);
                       while($rowRank = mysqli_fetch_array($resultRank))
                       {

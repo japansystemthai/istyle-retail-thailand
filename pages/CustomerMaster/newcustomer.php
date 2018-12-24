@@ -95,7 +95,7 @@
                   <div class="input-group-addon">
                     <i class="fa fa-calendar"></i>
                   </div>
-                  <input type="date" class="form-control" id="birth" name="birth" autocomplete="off" required value="<?php echo isset($_POST["birth"]) ? $_POST["birth"] : ''; ?>">
+                  <input type="text" class="form-control" id="birth" name="birth" autocomplete="off" required value="<?php echo isset($_POST["birth"]) ? $_POST["birth"] : ''; ?>">
                 </div>
                 <!-- /.input group -->
               </div>
@@ -283,10 +283,10 @@
     $('#datepicker').datepicker({
       autoclose: true
     })
-   /* $('#birth').datepicker({
+    $('#birth').datepicker({
       autoclose: true,
       format: 'dd/mm/yyyy'
-    })*/
+    })
 
     //iCheck for checkbox and radio inputs
     $('input[type="checkbox"].minimal, input[type="radio"].minimal').iCheck({
@@ -329,7 +329,7 @@
         exit(); 
     }
     
-    if(!isset( $_POST['tel']) || !preg_match('/^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,9}$/im', $_POST['tel']))
+    if(!isset( $_POST['tel']) || !preg_match('/^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{3,9}$/im', $_POST['tel']))
     {
         echo "<script type='text/javascript'>alert('Please input Telephone Number!');</script>";
         exit(); 
@@ -370,13 +370,12 @@
     }
     else{   
         date_default_timezone_set("Asia/Bangkok");
-        
-        //$substr = substr($_POST['cusCode'],2);
+        $birthdate = DateTime::createFromFormat('d/m/Y',$_POST['birth'])->format('Y-m-d');
         $strSQL = "INSERT INTO M_CUSTOMER VALUES ('".$_POST["cusCode"]."',
         '".strval($_POST["tel"])."', 
         '".$_POST["cusNameEng"]."',
         '".$_POST["cusName"]."',
-        '".$_POST['birth']."',
+        '".$birthdate."',
         '".$_POST["gender"]."',
         '".$_POST["race"]."',
         '".$_POST["email"]."',

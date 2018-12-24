@@ -18,6 +18,8 @@
   <link rel="stylesheet" href="../../bower_components/select2/dist/css/select2.min.css">
     <!-- Theme style -->
   <link rel="stylesheet" href="../../dist/css/AdminLTE.min.css">
+<!-- jQuery 3 -->
+<script src="../../bower_components/jquery/dist/jquery.min.js"></script>
   <style>
     .example-modal .modal {
       position: relative;
@@ -33,6 +35,7 @@
       background: transparent !important;
     }
   </style>
+  
 </head>
 <body class="hold-transition skin-green" style="min-height: 100%">
 <div class="wrapper">
@@ -62,7 +65,40 @@
         <li class="active">Data customer</li>
       </ol>
     </section>
-
+<script type="text/javascript" language="javascript">
+    $(document).ready(function() {
+    $('#customerTable').DataTable( {
+        "processing": true,
+        "serverSide": true,
+        "ajax": {
+            "url": "scripts/getDataCust.php",
+            "type": "POST"
+        },
+        "columns": [
+            { "data": "Customer Code" },
+            { "data": "Customer Name(ENG)" },
+            { "data": "Customer Name" },
+            { "data": "Tel" },
+            { "data": "Birth date" },
+            { "data": "Gender" },
+            { "data": "Nationality" },
+            { "data": "Rank" },
+            { "data": "Delete",
+              "Sortable": false,
+              "mRender": function(data, type, full) {
+                          return '<input type="checkbox" name="checkbox[]" value=' + data + '>';
+                  } 
+            },
+            { "data": "Edit",
+              "Sortable": false,
+              "mRender": function(data, type, full) {
+                          return '<a class="editcus btn btn-block btn-success btn-sm" data-id=' + data + ' data-userid='+ "<?php echo $objResult["USER_ID"]; ?>" +' role="button" data-toggle="modal" data-target="#modal-editcus" data-dismiss="modal" id="editcus" name="editcus">' + 'Edit' + '</a>';
+                  } 
+            }
+        ]
+    } );
+});
+  </script>
     <!-- Main content -->
     <section class="content">
       <div class="row">
@@ -74,7 +110,7 @@
             <!-- /.box-header -->
             <div class="box-body">
               <form name="form1" method="post" action="">
-              <table id="example1" class="table table-bordered table-striped">
+              <table id="customerTable" class="table table-bordered table-striped">
                 <thead>
                 <tr>
                   <th>Customer Code <br>  รหัสลูกค้า</th>
@@ -89,40 +125,6 @@
                   <th>Edit <br> แก้ไข</th>
                 </tr>
                 </thead>
-                <tbody>
-                
-                  <?php //connect db
-                    include("../../connect.php");
-                    $sql = "select C.CST_CODE,  C.TEL_NO, C.CST_NAME_EN, C.CST_NAME, C.DATEOFBIRTH,
-                    (SELECT CLASSIFICATION_CODE_EN_NM from M_CLASSIFICATION CL WHERE C.GENDER = CL.CLASSIFICATION_CODE AND CL.CLASSIFICATION_ID = '100') AS GENDER, 
-                    (SELECT CLASSIFICATION_CODE_EN_NM from M_CLASSIFICATION CL WHERE C.NATIONALITY = CL.CLASSIFICATION_CODE AND CL.CLASSIFICATION_ID = '300') AS NATIONALITY, 
-                    C.EMAIL, C.LINE_ID, C.ADDRESS, M.RANK_NAME,  C.REG_YMD, C.REG_TIME, C.REG_ID, C.MOD_FLG, C.MOD_YMD,  C.MOD_TIME, C.MOD_ID
-                      from M_CUSTOMER C, M_RANK M
-                      where C.DELETE_FLG = '0'
-                      AND C.START_RANK = M.RANK_CODE
-                      order by CST_CODE";  //เรียกข้อมูลมาแสดงทั้งหมด
-                    $result = mysqli_query($conn, $sql);
-                    while($row = mysqli_fetch_array($result))
-                    {
-                  ?>
-                  <tr>
-                    <td><?php echo $row['CST_CODE']?></td>
-                    <td><?php echo $row['CST_NAME_EN']?></td>
-                    <td><?php echo $row['CST_NAME']?></td>
-                    <td><?php echo $row['TEL_NO']?></td>
-                    <td><?php echo $row['DATEOFBIRTH']?></td>
-                    <td><?php echo $row['GENDER']?></td>
-                    <td><?php echo $row['NATIONALITY']?></td>
-                    <td><?php echo $row['RANK_NAME']?></td>
-                    <td><input type="checkbox" name="checkbox[]" value="<?php echo $row['CST_CODE']?>"></td>
-                    <td><?php echo "<a class='editcus btn btn-block btn-success btn-sm' data-id='".$row['CST_CODE']."' data-userid='".$objResult["USER_ID"]."' role='button' data-toggle='modal' data-target='#modal-editcus' id='editcus' name='editcus'>Edit</a>"; ?></td>
-                  </tr>
-                  <?php
-                    }
-                    ?>
-                
-                
-                </tbody>
                 <tfoot>
                 <tr>
                   <th>Customer Code <br>  รหัสลูกค้า</th>
@@ -190,7 +192,9 @@
 </div>
 <!-- ./wrapper -->
 
-<?php include('../../jquery_customer.php'); ?>
+
+<!-- Bootstrap 3.3.7 -->
+<script src="../../bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
 <!-- DataTables -->
 <script src="../../bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
 <script src="../../bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
@@ -228,6 +232,10 @@
       autoclose: true,
       format: 'dd/mm/yyyy'
     })
+    $('#birth').datepicker({
+      autoclose: true,
+      format: 'dd/mm/yyyy'
+    })
 
     //iCheck for checkbox and radio inputs
     $('input[type="checkbox"].minimal, input[type="radio"].minimal').iCheck({
@@ -260,13 +268,15 @@
       'autoWidth'   : false
     })
   })
+  
 </script>
 <script >
 $(document).ready(function() {
-$('#example1').on('click','.editcus', function (e) {
+$('#customerTable').on('click','.editcus', function (e) {
   e.preventDefault();
   var val = $(this).data('id');
   var userid = $(this).data('userid');
+  var mydata = {id: val};
     if($('.editcus').filter(function(){
         return $(this).data('id') === val;       
     }).length) {
@@ -274,8 +284,9 @@ $('#example1').on('click','.editcus', function (e) {
         $.ajax({
             type: "POST",
             url: 'ShowEditCust.php',
-            dataType: 'JSON',
             data: {id: val},
+            dataType: 'JSON',
+            cache: false,
             error: function (xhr, status, error) {
                 alert("Error: " + error + " Status: " + status + " xhr: " + xhr.responseText);
                 $('#modal-editcus').modal('hide');
@@ -285,17 +296,18 @@ $('#example1').on('click','.editcus', function (e) {
                 alert("What follows is blank: " + data);
                 $('#modal-editcus').modal('hide');
               } else{  
-            
+                var d = new Date(data.DATEOFBIRTH);
+                var birth_date = ("0" + d.getDate()).slice(-2) + "/" + ("0" + (d.getMonth() + 1)).slice(-2) + "/" + d.getFullYear();
                     $("#cusCode").val(data.CST_CODE);
-                    $("#tel").val(data.TEL_NO);
-                    $("#cusNameEng").val(data.CST_NAME_EN); 
-                    $("#cusName").val(data.CST_NAME);
-                    $("#birth").val(data.DATEOFBIRTH);
+                    $("#tel").val($.trim(data.TEL_NO));
+                    $("#cusNameEng").val($.trim(data.CST_NAME_EN)); 
+                    $("#cusName").val($.trim(data.CST_NAME));
+                    $("#birth").val(birth_date);
                     $('#gender option[value="'+data.GENDER+'"]').prop('selected', true);
                     $('#race option[value="'+data.NATIONALITY+'"]').prop('selected', true).trigger('change');
-                    $("#email").val(data.EMAIL);
-                    $("#address").val(data.ADDRESS);
-                    $("#lineId").val(data.LINE_ID);
+                    $("#email").val($.trim(data.EMAIL));
+                    $("#address").val($.trim(data.ADDRESS));
+                    $("#lineId").val($.trim(data.LINE_ID));
                     $('#rank option[value="'+data.START_RANK+'"]').prop('selected', true);
                     $("#reg_id").val(data.REG_ID);
                     $("#reg_ymd").val(data.REG_YMD);
@@ -324,7 +336,7 @@ $('#example1').on('click','.editcus', function (e) {
 });
   $('#saveeditcust').click(function(e) {
     e.preventDefault();
-    var regexp = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,9}$/im
+    var regexp = /^[/+]?[(]?[0-9]{3}[)]?[-/s/.]?[0-9]{3}[-/s/.]?[0-9]{3,9}$/im
     if($('#tel').val() == "" || !regexp.test($('#tel').val()))
     {
         alert('Please input Telephone Number!');
@@ -346,6 +358,7 @@ $('#example1').on('click','.editcus', function (e) {
         alert('Please input Birthdate!');
         return; 
     }
+    /*
     if($('#reg_id').val() == "")
     {
         alert('Please input Register ID!');
@@ -360,7 +373,7 @@ $('#example1').on('click','.editcus', function (e) {
     {
         alert('Please input Register ID!');
         return;
-    }
+    }*/
     var userid = $(this).data('userid');
     var now = new Date();
     var day = ("0" + now.getDate()).slice(-2);
@@ -404,7 +417,8 @@ $('#example1').on('click','.editcus', function (e) {
         } else if(data == 'Phone Number already exists!') {
           alert("Phone Number already exists!"); 
         } else {
-          alert('Failed to Update');
+          alert(data);
+          console.log(data);
         }
       }
     });//close ajax
