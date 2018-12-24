@@ -108,7 +108,7 @@ if(!isset( $_POST['username'])) {
         }elseif($data['AUTHORITY']=='2'){                              //ตรวจสอบสถานะของผู้ใช้งานว่าเป็น user
           $_SESSION["ses_userid"] = session_id();                      //สร้าง session สำหรับให้ User นำไปใช้งาน
           $_SESSION['ses_username'] = $data['USER_ID'];
-          $_SESSION['ses_status'] = "master";
+          $_SESSION['ses_status'] = "Manager";
           header("location:indexmainmenu.php");
           //ส่งค่าจากหน้านี้ไปหน้า index_user.php
         }elseif($data['AUTHORITY']=='1'){                              //ตรวจสอบสถานะของผู้ใช้งานว่าเป็น user

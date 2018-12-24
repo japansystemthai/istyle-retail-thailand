@@ -135,8 +135,8 @@ exit();
          <b style="font-size:1.5em;"><?php
           if($_SESSION['ses_status'] == "Administrator" ) {
             echo "ADMIN";
-          } elseif ($_SESSION['ses_status'] == "master") {
-                echo "MASTER";
+          } elseif ($_SESSION['ses_status'] == "Manager") {
+                echo "MANAGER";
           } else { echo "GENERAL"; }  
         ?>&nbsp;&nbsp;&nbsp;MAIN&nbsp;&nbsp;&nbsp;MENU</b> 
           </li>
@@ -145,20 +145,20 @@ exit();
               &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ข้อมูลคะแนนลูกค้า</span></a>
         </li>  
         <?php
-          if($_SESSION['ses_status'] == "Administrator" || $_SESSION['ses_status'] == "master") {
+          if($_SESSION['ses_status'] == "Administrator" || $_SESSION['ses_status'] == "Manager") {
         ?>
         <li>
           <a href="pages/CustomerMaster/customer.php"><i class="fa fa-th"></i><span> Customer Master Maintenance<br>
                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;การจัดการมาสเตอร์ลูกค้า</span></a>
         </li>
-        <?php
-          }
-          if($_SESSION['ses_status'] == "Administrator") {
-        ?>
         <li>
           <a href="pages/PromotionMaster/promotion.php"><i class="fa fa-pie-chart"></i><span>Promotion Master Maintenance<br>
              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;การจัดการมาสเตอร์โปรโมชั่น </span></a>
         </li>
+        <?php
+          }
+          if($_SESSION['ses_status'] == "Administrator") {
+        ?>
         <li>
           <a href="pages/RankMaster/rankmaster.php"><i class="fa fa-table"></i><span>Point Rank Master Maintenance<br>
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;การจัดการมาสเตอร์ระดับคะแนน
@@ -168,7 +168,14 @@ exit();
           <a href="pages/UserMaster/user.php"><i class="fa fa-user"></i><span>User Master Maintenance<br>
               &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;การจัดการมาสเตอร์ผู้ใช้ 
             </span></a>
-        </li>  
+        </li> 
+        <li>
+          <a href="pages/PointAdjustment/searchPoint.php"><i class="fa fa-database"></i>
+            <span>Point Adjustment Maintenance<br>
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;การแก้ไขคะแนน
+            </span>
+          </a>
+        </li> 
         <?php
           }
         ?> 

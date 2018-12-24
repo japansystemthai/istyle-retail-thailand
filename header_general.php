@@ -59,8 +59,7 @@ echo "<script type='text/javascript'> window.alert('Please Login to System!');
                   <?php echo $objResult["USER_NAME"];?> - <span style="text-transform: capitalize;"><?php echo $_SESSION['ses_status'];?></span>
 
                   <small>Member since 
-                    <?php date_default_timezone_set("Asia/Bangkok");
-                          $newDate = date("M. Y", strtotime($objResult["REG_YMD"])); 
+                    <?php $newDate = date("M. Y", strtotime($objResult["REG_YMD"])); 
                           echo $newDate; 
                     ?>
                   </small>
