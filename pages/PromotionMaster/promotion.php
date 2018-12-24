@@ -4,6 +4,8 @@
   <?php include('../../head.php'); ?>
     <!-- DataTables -->
   <link rel="stylesheet" href="../../bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css">
+   <!-- Theme style -->
+  <link rel="stylesheet" href="../../dist/css/AdminLTE.min.css">
 </head>
 <body class="hold-transition skin-green" style="min-height: 100%;">
 <div class="wrapper">
@@ -35,17 +37,17 @@
     </section>
 
     <!-- Main content -->
-    <section class="content" style="overflow-x: scroll;">
+    <section class="content">
       <div class="row">
         <div class="col-xs-12">
           <div class="box">
             <div class="box-header">
-              <h3 class="box-title"><a href="newpromotion.php" class="btn btn-block btn-primary">Create new promotion<br>สร้างโปรโมชั่น</a></h3>
+              <h3 class="box-title"><a href="newpromotion.php" class="btn btn-block btn-primary" id="newpromotion">Create new promotion<br>สร้างโปรโมชั่น</a></h3>
             </div>
             <!-- /.box-header -->
             <div class="box-body" >
               <form name="form1" method="post" action="">
-              <table id="example1" class="table table-bordered table-striped">
+              <table id="promotion1" class="table table-bordered table-striped">
                 <thead>
                 <tr>
                   <th>Promotion Code <br> รหัสโปรโมชั่น</th>
@@ -68,13 +70,14 @@
                             END AS PROMOTION_TYPE_N, H.POINT_AMOUNT, S.PRIORITY_NO, H.REMARK
                       FROM  M_PROMOTION_HEAD H, M_PROMOTION_STORE S
                       WHERE S.PROMOTION_CODE = H.PROMOTION_CODE
+                      AND H.DELETE_FLG = 0
                       order by H.PROMOTION_CODE";  //เรียกข้อมูลมาแสดงทั้งหมด
                     $result = mysqli_query($conn, $sql);
                     while($row = mysqli_fetch_array($result))
                     {
                   ?>
                   <tr>
-                    <td><?php echo $row['PROMOTION_CODE']?></td>
+                    <td><a href="showPromotion.php?proCode=<?php echo $row['PROMOTION_CODE']?>"><?php echo $row['PROMOTION_CODE']?></a></td>
                     <td><?php echo $row['PROMOTION_NAME']?></td>
                     <td><?php echo $row['START_YMD']?></td>
                     <td><?php echo $row['FINISH_YMD']?></td>
@@ -112,9 +115,9 @@
                   for($i=0;$i<count($checkbox);$i++){
 
                     $del_id = $checkbox[$i];
-                    $sqlHead = "DELETE FROM M_PROMOTION_HEAD WHERE PROMOTION_CODE = '$del_id'";
-                    $sqlStore = "DELETE FROM M_PROMOTION_STORE WHERE PROMOTION_CODE = '$del_id'";
-                    $sqlDetail = "DELETE FROM M_PROMOTION_DETAIL WHERE PROMOTION_CODE = '$del_id'";
+                    $sqlHead = "UPDATE M_PROMOTION_HEAD SET MOD_YMD = '".date("Y-m-d")."', MOD_TIME = '".date("H:i:s")."',MOD_ID = '".$objResult["USER_ID"]."',DELETE_FLG = '1' WHERE PROMOTION_CODE = '$del_id'";
+                    $sqlStore = "UPDATE M_PROMOTION_STORE SET MOD_YMD = '".date("Y-m-d")."', MOD_TIME = '".date("H:i:s")."',MOD_ID = '".$objResult["USER_ID"]."',DELETE_FLG = '1' WHERE PROMOTION_CODE = '$del_id'";
+                    $sqlDetail = "UPDATE M_PROMOTION_DETAIL SET MOD_YMD = '".date("Y-m-d")."', MOD_TIME = '".date("H:i:s")."',MOD_ID = '".$objResult["USER_ID"]."',DELETE_FLG = '1' WHERE PROMOTION_CODE = '$del_id'";
                     $resultHead = mysqli_query($conn,$sqlHead);
                     $resultDetail = mysqli_query($conn,$sqlDetail);
                     $resultStore = mysqli_query($conn,$sqlStore);
@@ -169,7 +172,7 @@
 <!-- page script -->
 <script>
   $(function () {
-    $('#example1').DataTable()
+    $('#promotion1').DataTable()
     $('#example2').DataTable({
       'paging'      : true,
       'lengthChange': false,
@@ -180,6 +183,17 @@
     })
   })
 </script>
-
+<script type="text/javascript">
+var ses_status = '<?php echo $_SESSION["ses_status"] ?>';
+if (ses_status === "Manager") {
+  $("#newpromotion").addClass("disabled").prop("disabled", true);
+  $("#delete").addClass("disabled").prop("disabled", true);
+  $('input[type="checkbox"]').prop('disabled', true);
+} else {
+  $("#newpromotion").removeClass("disabled").prop("disabled", false);
+  $("#delete").removeClass("disabled").prop("disabled", false);
+  $('input[type="checkbox"]').prop('disabled', false);
+}
+</script>
 </body>
 </html>

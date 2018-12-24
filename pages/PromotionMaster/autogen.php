@@ -1,6 +1,5 @@
 <?php
 	include("../../connect.php");
-   date_default_timezone_set("Asia/Bangkok");
    $date = date("my");
    $check = "P".$date;
    $strSQL = "SELECT PROMOTION_CODE FROM M_PROMOTION_HEAD WHERE PROMOTION_CODE LIKE '".$check."%' ORDER BY PROMOTION_CODE DESC LIMIT 1";

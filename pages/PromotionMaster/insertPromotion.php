@@ -1,14 +1,21 @@
 <?php
+//header("Content-Type: application/json", true);
     include ("../../connect.php");
     //mysql_select_db("mydatabase");
-    
-  if(isset($_POST['promotionCode'])) {
+  //$promotionCode2 = json_encode($_POST['promotionCode']);
+  $promotionCode = $_POST['promotionCode'];
+  //echo "pro1:".$promotionCode."<br>";
+  //echo "pro1.5:".$promotionCode2."<br>";
+  if(isset($promotionCode)) {
      date_default_timezone_set("Asia/Bangkok");
-    if(trim($_POST["promotionCode"]) == "") {
+    $startdate = DateTime::createFromFormat('d/m/Y',$_POST['start'])->format('Y-m-d');
+    $finishdate = DateTime::createFromFormat('d/m/Y',$_POST['finish'])->format('Y-m-d');
+    if(trim($promotionCode) == "") {
         echo "Please refresh page because Promotion Code is dissappear!";
         exit(); 
     }
-    $strSQL1 = "SELECT * FROM M_PROMOTION_HEAD WHERE PROMOTION_CODE = '".trim($_POST['promotionCode'])."' ";
+    //echo "pro2:".$promotionCode."<br>";
+    $strSQL1 = "SELECT * FROM M_PROMOTION_HEAD WHERE PROMOTION_CODE = '".trim($promotionCode)."' ";
     $objQuery = mysqli_query($conn,$strSQL1);
     $checkPromotion = mysqli_num_rows($objQuery);
     if($checkPromotion > 0) {
@@ -21,12 +28,17 @@
         exit(); 
     }
 
+    if ($startdate > $finishdate) {
+       echo "Please input Finish date more than Start date!";
+        exit(); 
+    }
+
     if (!isset($_POST['Priority']) || $_POST['Priority'] <= 0) {
         echo "Please input Priority!";
         exit(); 
     }
 
-    $strSQL2 = "SELECT * FROM M_PROMOTION_STORE WHERE PRIORITY_NO = '".trim($_POST['Priority'])."' ";
+    $strSQL2 = "SELECT * FROM M_PROMOTION_STORE S, M_PROMOTION_HEAD H WHERE S.PRIORITY_NO = '".trim($_POST['Priority'])."' AND S.PROMOTION_CODE = H.PROMOTION_CODE AND H.FINISH_YMD >= CURDATE() AND H.DELETE_FLG = '0'";
     $objQuery2 = mysqli_query($conn,$strSQL2);
     $checkPriority = mysqli_num_rows($objQuery2);
     if ($checkPriority > 0) {
@@ -46,30 +58,26 @@
     }
 
     if(!empty($_POST['all_product'])) {
-        $strSQL_ProDetail = "INSERT INTO M_PROMOTION_DETAIL VALUES ('".$_POST["promotionCode"]."','".$_POST['all_product']."',NULL,NULL,'".date("Y-m-d")."','".date("H:i:s")."','".$_POST["USER_ID"]."',NULL,NULL,NULL,'0')";
+        $strSQL_ProDetail = "INSERT INTO M_PROMOTION_DETAIL VALUES ('".$_POST["promotionCode"]."','".$_POST['all_product']."','','','".date("Y-m-d")."','".date("H:i:s")."','".$_POST["USER_ID"]."',NULL,NULL,NULL,'0')";
         mysqli_query($conn,$strSQL_ProDetail);
     } elseif(!empty($_POST['Category']) || !empty($_POST['Maker'])) {
-        if ($_POST['Category'] == "" && $_POST['Maker'] == "") {
-           $strSQL_CheckProduct = "SELECT PRODUCT_CODE, CATEGORY_CODE, MAKER_CODE FROM M_PRODUCT";
-        } elseif ($_POST['Category'] == "" && $_POST['Maker'] != "") {
-            $strSQL_CheckProduct = "SELECT PRODUCT_CODE, CATEGORY_CODE, MAKER_CODE FROM M_PRODUCT WHERE MAKER_CODE = '".$_POST["Maker"]."'";
-        } elseif ($_POST['Category'] != "" && $_POST['Maker'] == "") {
-            $strSQL_CheckProduct = "SELECT PRODUCT_CODE, CATEGORY_CODE, MAKER_CODE FROM M_PRODUCT WHERE CATEGORY_CODE = '".$_POST["Category"]."'";
-        } else {
-            $strSQL_CheckProduct = "SELECT PRODUCT_CODE, CATEGORY_CODE, MAKER_CODE FROM M_PRODUCT WHERE CATEGORY_CODE = '".$_POST["Category"]."' AND MAKER_CODE = '".$_POST["Maker"]."'";
-        }
-        
-        $objQuery_CheckProduct = mysqli_query($conn,$strSQL_CheckProduct);
-        $CheckRowProduct = mysqli_num_rows($objQuery_CheckProduct);
-        if ($CheckRowProduct > 0) {
-            while ($RowQueryProduct = mysqli_fetch_array($objQuery_CheckProduct)) {
-                $strSQL_ProDetail = "INSERT INTO M_PROMOTION_DETAIL VALUES ('".$_POST["promotionCode"]."','".$RowQueryProduct['PRODUCT_CODE']."','".$RowQueryProduct['CATEGORY_CODE']."','".$RowQueryProduct['MAKER_CODE']."','".date("Y-m-d")."','".date("H:i:s")."','".$_POST["USER_ID"]."',NULL,NULL,NULL,'0')";
+        if ($_POST['Category'] != "" && $_POST['Maker'] != "") {
+           $strSQL_CheckProduct = "SELECT PRODUCT_CODE, CATEGORY_CODE, MAKER_CODE FROM M_PRODUCT WHERE CATEGORY_CODE = '".$_POST["Category"]."' AND MAKER_CODE = '".$_POST["Maker"]."'";
+           $objQuery_CheckProduct = mysqli_query($conn,$strSQL_CheckProduct);
+            $CheckRowProduct = mysqli_num_rows($objQuery_CheckProduct);
+            if ($CheckRowProduct <= 0) {
+                echo "Don`t have Product matching Category and Maker!";
+                exit(); 
+            } else {
+                $strSQL_ProDetail = "INSERT INTO M_PROMOTION_DETAIL VALUES ('".$_POST["promotionCode"]."','','".$_POST['Category']."','".$_POST['Maker']."','".date("Y-m-d")."','".date("H:i:s")."','".$_POST["USER_ID"]."',NULL,NULL,NULL,'0')";
                 mysqli_query($conn,$strSQL_ProDetail);
-            }        
+            }
+
         } else {
-            echo "Don`t have Product matching Category and Maker!";
-            exit(); 
-        }
+            $strSQL_ProDetail = "INSERT INTO M_PROMOTION_DETAIL VALUES ('".$_POST["promotionCode"]."','','".$_POST['Category']."','".$_POST['Maker']."','".date("Y-m-d")."','".date("H:i:s")."','".$_POST["USER_ID"]."',NULL,NULL,NULL,'0')";
+             mysqli_query($conn,$strSQL_ProDetail);
+        }        
+        
     } elseif (!empty($_POST["ProductID"])) {
         foreach($_POST['ProductID'] as  $setProductID)
             {   
@@ -111,7 +119,8 @@
     } else {
         $checkproductall = '0';
     }
-        $strSQL_ProHead = "INSERT INTO M_PROMOTION_HEAD VALUES ('".$_POST["promotionCode"]."','".$_POST["promotionName"]."','".$_POST["start"]."','".$_POST["finish"]."','".$_POST["promotion_type"]."','".$_POST["Point"]."',$checkproductall,'".$_POST["Remark"]."','".date("Y-m-d")."','".date("H:i:s")."','".$_POST["USER_ID"]."',NULL,NULL,NULL,'0')";
+    
+        $strSQL_ProHead = "INSERT INTO M_PROMOTION_HEAD VALUES ('".$_POST["promotionCode"]."','".$_POST["promotionName"]."','".$startdate."','".$finishdate."','".$_POST["promotion_type"]."','".$_POST["Point"]."',$checkproductall,'".$_POST["Remark"]."','".date("Y-m-d")."','".date("H:i:s")."','".$_POST["USER_ID"]."',NULL,NULL,NULL,'0')";
         mysqli_query($conn,$strSQL_ProHead);
         echo "Success";
    } else {

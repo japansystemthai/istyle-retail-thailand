@@ -1,4 +1,5 @@
 <?php //connect db
+header("Content-Type: application/json", true);
 $id = $_POST["val"];
 include("../../connect.php");
 $sql = "select PRODUCT_NAME
