@@ -7,7 +7,12 @@
 </head>
 <body class="hold-transition skin-green" style="min-height: 100%">
 <div class="wrapper">
-  <?php include('../../header.php'); ?>
+  <?php include('../../header.php'); 
+        if($_SESSION['ses_status'] == "Manager") {
+          echo "<script type='text/javascript'> window.alert('Can not use this page!'); 
+                window.location.href='javascript:history.go(-1)';
+                </script>";
+          }?>
   
   <!-- Left side column. contains the logo and sidebar -->
   <aside class="main-sidebar">
@@ -62,7 +67,7 @@
                     include("../../connect.php");
                     $sql = "select *,CASE
                             WHEN AUTHORITY = '9' THEN 'Administrator'
-                            WHEN AUTHORITY = '2' THEN 'Master'
+                            WHEN AUTHORITY = '2' THEN 'Manager'
                             ELSE 'General' END AS AUTHORITY from M_USER WHERE DELETE_FLG = '0' order by USER_ID";  //เรียกข้อมูลมาแสดงทั้งหมด
                     $result = mysqli_query($conn, $sql);
                     while($row = mysqli_fetch_array($result))
@@ -92,11 +97,12 @@
                 </tr>
                 </tfoot>
               </table>
-              <input class="btn btn-block btn-danger btn-flat" name="delete" type="submit" id="delete" value="Delete" style="width: 30%;display: block;margin-right: auto;margin-left: auto;" onclick="return confirm('Are you sure you want to delete that?');">
+              <input class="btn btn-block btn-danger btn-flat" name="Delete" type="submit" id="Delete" value="Delete" style="width: 30%;display: block;margin-right: auto;margin-left: auto;" onclick="return confirm('Are you sure you want to delete that?');">
                <?php
                 // Check if delete button active, start this 
-                if(isset($_POST['delete']))
-                {
+                if(isset($_POST['Delete']))
+                {   
+                  echo "<script type='text/javascript'>alert('aaaaa');</script>";
                     $checkbox = $_POST['checkbox'];
                     date_default_timezone_set("Asia/Bangkok");
                   for($i=0;$i<count($checkbox);$i++){
