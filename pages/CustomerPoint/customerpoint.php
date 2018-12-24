@@ -60,69 +60,80 @@
               <h3 class="box-title"></h3>
             </div>
             <!-- /.box-header -->
-            <div class="box-body" id="nav">
-              <form name="form1" method="post" action="" >
-              <table id="example1" class="table table-bordered table-striped">
-                <thead>
-                <tr>
-                  <th>Code:รหัสลูกค้า</th>
-                 <th>Name : ชื่อภาษาไทย</th>
-                  <th>Mobile :โทรศัพท์</th>
-                  <th>Rank:ระดับ</th>
-                  <th>Point:คะแนน</th>
-				  <th>Expire Point Y1</th>
-                  <th>Expire Point Y2</th>
-                </tr>
-                </thead>
-                <tbody>
-                
-                  <?php //connect db
-                    include("../../connect.php");
-                    $sql = "select C.CST_CODE,  C.TEL_NO, C.CST_NAME_EN, C.CST_NAME,C.ADDRESS, P.RANK, P.REMAIN_POINT, P.EXP_POINT_Y1, P.EXP_POINT_Y2
-                      from M_CUSTOMER C, M_POINT P
-                      where C.CST_CODE = P.CST_CODE";  
-                    $result = mysqli_query($conn, $sql);
-                    while($row = mysqli_fetch_array($result))
-                    {
-                  ?>
-                  <tr>
-					<td ><a href="#content1" onclick="show('<?php echo $row['CST_CODE'] ?>')"><?php echo $row['CST_CODE'] ?></a></td>
-                    <td><?php echo $row['CST_NAME']?></td>
-                    <td><?php echo $row['TEL_NO']?></td>
-                    <td><?php echo $row['RANK']?></td>
-                    <td><?php echo $row['REMAIN_POINT']?></td>
-                    <td><?php echo $row['EXP_POINT_Y1']?></td>
-                    <td><?php echo $row['EXP_POINT_Y2']?></td>
-                  </tr>
-                  <?php
-                    }
-                    ?>
-                
-                
-                </tbody>
-                
-              </table>
-           </form>
+              <div class="box-header">
+            <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                     <b style="font-size:1.2em;"></b>
+                    <form method="post" class="form-inline" name="searchform1" id="searchform1">
+                         <div class="form-group">
+                        <label for="textsearch" >ค้นหาข้อมูลลูกค้า</label>
+                          <input type="text" name="CST_CODE" id="CST_CODE" class="form-control" placeholder="ค้นจากรหัสลูกค้า/เบอร์โทร" autocomplete="off">
+                        </div>
+                        <button type="button" class="btn btn-primary" id="btnSearch1">
+                            <span class="glyphicon glyphicon-search"></span>
+                            search
+                        </button>
+                    </form>
+                </div>
+            </div>
 				
+            <div class="loading"></div>
+            <div class="row" id="list-data1" style="margin-top: 10px;">
+            </div>
+        </div>
+ 
+				  
+         <script type="text/javascript" src="jquery-1.11.2.min.js"></script>
+        <script type="text/javascript">
+            $(function () {
+                $("#btnSearch1").click(function () {
+                    $.ajax({
+                        url: "search1.php",
+                        type: "post",
+                        data: {CST_CODE: $("#CST_CODE").val(),
+							   TEL_NO: $("#TEL_NO").val()
+							  },
+                        beforeSend: function () {
+                            $(".loading").show();
+                        },
+                        complete: function () {
+                            $(".loading").hide();
+                        },
+                        success: function (data) {
+                            $("#list-data1").html(data);
+                        },
+						
+						error: function (xhr, status, error) {
+                       alert("Error: " + error + " Status: " + status + " xhr: " + xhr.responseText );
+                       console.log("Error: " + error + " Status: " + status + " xhr: " + xhr.responseText);
+                       }
+                    });
+				  //alert("Code: "+ $("#CST_CODE").val() );
+                });
+               
+            });	
 			
-				
-		</div>
+        </script>
+            
+           </div>
+            
             <!-- /.box-body -->
 			 <div class="box-body ex" id="content1" style="display:none" >
-              <table id="showdetail" name="showdetail" class="table table-bordered table-striped-1">
+              <table id="showdetail" name="showdetail" class="table table-bordered table-striped">
              <thead>
                 <tr>
-				  <th>Customer code:<br>รหัสลูกค้า</th>
-                  <th>Store code:<br>รหัสสาขา</th>
-                  <th>Bill number :<br>รหัสบิล</th>
-                  <th>Bill type :<br>ประเภทบิล</th>
-                  <th>Pos No:<br>ระดับ</th>
-                   <th>Sub total<br>ราคารวม</th>
+				  <th>Customer code<br>รหัสลูกค้า</th>
+                  <th>Store<br>สาขา</th>
+                  <th>Bill number<br>หมายเลขบิล</th>
+                  <th>Bill type <br>ประเภทบิล</th>
+                  <th>Pos No<br>หมายเลขPOS</th>
+                  <th>Subtotal<br>ยอดไม่รวมภาษี</th>
                   <th>Tax<br>ภาษี</th>
-				  <th>Amount :<br>ราคารวม</th>
-				  <th>Receive point:<br>คะแนนที่ได้รับ</th>
-				  <th>Use point:<br>คะแนนที่ใช้</th>
-                </tr>
+				  <th>Amount<br>จำนวนเงิน</th>
+				  <th>Receive point<br>คะแนนที่ได้รับ</th>
+				  <th>Use point<br>คะแนนที่ใช้</th>
+                  </tr>
               </thead>
               <tbody id="tbodyshowdetail">
                
@@ -205,7 +216,7 @@ function show(value) {
   var val = value;
     $.ajax({
             type: "POST",
-            url: 'ShowCustomerPoint.php',
+            url: 'ShowCustomerPoint.php?id='+val,
             dataType: 'JSON',
             data: {id: val},
             error: function (xhr, status, error) {
@@ -220,12 +231,19 @@ function show(value) {
                 $("#content1").show();
                 $("#tbodyshowdetail").empty('');
                 for (var i = 0; i < data.length; i++) {
-                  $("#showdetail").append("<tr><td>" + data[i].CST_CODE + "</td><td>" + data[i].STORE_CODE + "</td><td>" + data[i].BILL_NO + "</td><td>" + data[i].BILL_TYPE + "</td><td>" + data[i].POS_NO + "</td><td>" + data[i].SUB_TOTAL + "</td><td>" + data[i].TAX + "</td><td>" + data[i].BILL_AMOUNT + "</td><td>" + data[i].REC_POINT + "</td><td>" + data[i].USE_POINT + "</td></tr>");
+                  $("#showdetail").append("<tr><td>" + data[i].CST_CODE + "</td><td>" + data[i].STORE_CODE + "</td><td>" + data[i].BILL_NO + "</td><td>" + data[i].BILL_TYPE + "</td><td>" + data[i].POS_NO + "</td><td>" + data[i].SUB_TOTAL + "</td><td>" + data[i].TAX + "</td><td>"+data[i].BILL_AMOUNT + "</td><td>" + data[i].REC_POINT + "</td><td>" + data[i].USE_POINT + "</td></tr>");
                 }
-
-                 
-              }  
-            }
+				 
+			//	  $("#rank").text("Amount to Rank::"+data[0].RANK_CODE);
+				
+				
+			  }
+				
+				
+		 }
+		      
+		
+		      
         });
  });
 
