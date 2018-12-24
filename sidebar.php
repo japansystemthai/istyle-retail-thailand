@@ -3,16 +3,10 @@
     <section class="sidebar" >
    
       <ul class="sidebar-menu" data-widget="tree">
-        <li class="header" style="background-color:	#61b876;text-align: center;" >
-         <b style="font-size:1.5em;" ><?php
-          if($_SESSION['ses_status'] == "Administrator" ) {
-            echo "ADMIN";
-          } elseif ($_SESSION['ses_status'] == "Manager") {
-                echo "MANAGER";
-          } else { echo "GENERAL"; }  
-        ?>&nbsp;&nbsp;&nbsp;MAIN&nbsp;&nbsp;&nbsp;MENU</b> 
+        <li class="header" style="background-color:	#61b876" >
+         <b style="font-size:1.5em;" >ADMIN&nbsp;&nbsp;&nbsp;MAIN&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MENU</b> 
         </li>
-        <li class="treeview active" style="font-color:#EEEEEE;"  >
+        <li class="treeview" style="font-color:#EEEEEE;"  >
           <a href="customerpoint.php">
               <i class="fa fa-files-o"></i>
             <span >Customer Point Inquiry<br>
@@ -20,17 +14,18 @@
             </span>
            </a>
          </li>
-          <?php
-          if($_SESSION['ses_status'] == "Administrator" || $_SESSION['ses_status'] == "Manager") {
-        ?>  
-        <li>
-          <a href="../CustomerMaster/customer.php"><i class="fa fa-th"></i> 
+          
+        <li class="treeview">
+          <a href="#">
+             <i class="fa fa-th"></i> 
               <span> Customer Master Maintenance<br>
-               &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;การจัดการมาสเตอร์ลูกค้า</span>
-          </a>
+               &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;การจัดการมาสเตอร์ลูกค้า
+              </span>
+          </a> 
         </li>
+          
         <li>
-          <a href="../PromotionMaster/promotion.php">
+          <a href="promotion.php">
             <i class="fa fa-pie-chart"></i>
             <span>Promotion Master Maintenance<br>
              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;การจัดการมาสเตอร์โปรโมชั่น 
@@ -38,13 +33,8 @@
           </a>
         </li>
           
-          <?php
-         }
-if($_SESSION['ses_status'] == "Administrator") {
-
-?>
         <li>
-          <a href="../RankMaster/rankmaster.php">
+          <a href="rankmaster.php">
            <i class="fa fa-table"></i>
         <span>Point Rank Master Maintenance<br>
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;การจัดการมาสเตอร์ระดับคะแนน
@@ -53,24 +43,15 @@ if($_SESSION['ses_status'] == "Administrator") {
          
         </li>
         
-          <li>
-          <a href="../UserMaster/user.php">
+          <li class="treeview">
+          <a href="#">
             <i class="fa fa-user"></i> 
             <span>User Master Maintenance<br>
               &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;การจัดการมาสเตอร์ผู้ใช้ 
             </span>
           </a>
          </li>
-         <li>
-          <a href="../PointAdjustment/searchPoint.php"><i class="fa fa-database"></i>
-            <span>Point Adjustment Maintenance<br>
-              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;การแก้ไขคะแนน
-            </span>
-          </a>
-        </li>
-          <?php
-          }
-          ?>
+          
       </ul>
     </section>
     <!-- /.sidebar -->

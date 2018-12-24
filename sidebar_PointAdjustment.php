@@ -1,77 +1,76 @@
- <aside class="main-sidebar" >
+<!-- Left side column. contains the logo and sidebar -->
+  <aside class="main-sidebar" >
     <!-- sidebar: style can be found in sidebar.less -->
     <section class="sidebar" >
-   
+      <!-- Sidebar user panel -->
+      <!-- sidebar menu: : style can be found in sidebar.less -->
       <ul class="sidebar-menu" data-widget="tree">
-        <li class="header" style="background-color:	#61b876;text-align: center;" >
+        <li class="header" style="background-color:   #61b876;text-align: center;" >
          <b style="font-size:1.5em;" ><?php
           if($_SESSION['ses_status'] == "Administrator" ) {
             echo "ADMIN";
-          } elseif ($_SESSION['ses_status'] == "Manager") {
-                echo "MANAGER";
+          } elseif ($_SESSION['ses_status'] == "master") {
+                echo "MASTER";
           } else { echo "GENERAL"; }  
         ?>&nbsp;&nbsp;&nbsp;MAIN&nbsp;&nbsp;&nbsp;MENU</b> 
         </li>
-        <li class="treeview active" style="font-color:#EEEEEE;"  >
-          <a href="customerpoint.php">
-              <i class="fa fa-files-o"></i>
+
+        <li>
+          <a href="../CustomerPoint/customerpoint.php"><i class="fa fa-files-o"></i>
             <span >Customer Point Inquiry<br>
-              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ข้อมูลคะแนนลูกค้า
-            </span>
-           </a>
-         </li>
-          <?php
-          if($_SESSION['ses_status'] == "Administrator" || $_SESSION['ses_status'] == "Manager") {
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ข้อมูลคะแนนลูกค้า</span>
+          </a>
+        </li>
+        <?php
+          if($_SESSION['ses_status'] == "Administrator" || $_SESSION['ses_status'] == "master") {
         ?>  
         <li>
           <a href="../CustomerMaster/customer.php"><i class="fa fa-th"></i> 
-              <span> Customer Master Maintenance<br>
+              <span>Customer Master Maintenance<br>
                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;การจัดการมาสเตอร์ลูกค้า</span>
           </a>
         </li>
+        <?php
+        }
+if($_SESSION['ses_status'] == "Administrator") {
+
+?>          
         <li>
-          <a href="../PromotionMaster/promotion.php">
-            <i class="fa fa-pie-chart"></i>
+          <a href="../PromotionMaster/promotion.php"><i class="fa fa-pie-chart"></i>
             <span>Promotion Master Maintenance<br>
-             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;การจัดการมาสเตอร์โปรโมชั่น 
-            </span>
+             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;การจัดการมาสเตอร์โปรโมชั่น </span>
           </a>
         </li>
           
-          <?php
-         }
-if($_SESSION['ses_status'] == "Administrator") {
-
-?>
         <li>
-          <a href="../RankMaster/rankmaster.php">
-           <i class="fa fa-table"></i>
-        <span>Point Rank Master Maintenance<br>
+          <a href="../RankMaster/rankmaster.php"><i class="fa fa-table"></i>
+            <span>Point Rank Master Maintenance<br>
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;การจัดการมาสเตอร์ระดับคะแนน
         </span>
-        </a>
-         
+          </a>
         </li>
         
-          <li>
-          <a href="../UserMaster/user.php">
-            <i class="fa fa-user"></i> 
+        <li>
+          <a href="../UserMaster/user.php"><i class="fa fa-user"></i> 
             <span>User Master Maintenance<br>
               &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;การจัดการมาสเตอร์ผู้ใช้ 
             </span>
           </a>
-         </li>
-         <li>
+        </li>
+
+        <li  class="active">
           <a href="../PointAdjustment/searchPoint.php"><i class="fa fa-database"></i>
             <span>Point Adjustment Maintenance<br>
               &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;การแก้ไขคะแนน
             </span>
           </a>
         </li>
-          <?php
-          }
-          ?>
+         <?php
+        }
+        ?>
       </ul>
     </section>
     <!-- /.sidebar -->
   </aside>
+
+          

@@ -10,8 +10,8 @@
          <b style="font-size:1.5em;" ><?php
           if($_SESSION['ses_status'] == "Administrator" ) {
             echo "ADMIN";
-          } elseif ($_SESSION['ses_status'] == "master") {
-                echo "MASTER";
+          } elseif ($_SESSION['ses_status'] == "Manager") {
+                echo "MANAGER";
           } else { echo "GENERAL"; }  
         ?>&nbsp;&nbsp;&nbsp;MAIN&nbsp;&nbsp;&nbsp;MENU</b> 
         </li>
@@ -23,7 +23,7 @@
           </a>
         </li>
         <?php
-          if($_SESSION['ses_status'] == "Administrator" || $_SESSION['ses_status'] == "master") {
+          if($_SESSION['ses_status'] == "Administrator" || $_SESSION['ses_status'] == "Manager") {
         ?>  
         <li>
           <a href="../CustomerMaster/customer.php"><i class="fa fa-th"></i> 
@@ -31,18 +31,17 @@
                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;การจัดการมาสเตอร์ลูกค้า</span>
           </a>
         </li>
-        <?php
-         }
-if($_SESSION['ses_status'] == "Administrator") {
-
-?>
         <li>
           <a href="../PromotionMaster/promotion.php"><i class="fa fa-pie-chart"></i>
             <span>Promotion Master Maintenance<br>
              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;การจัดการมาสเตอร์โปรโมชั่น </span>
           </a>
         </li>
-          
+        <?php
+         }
+if($_SESSION['ses_status'] == "Administrator") {
+
+?>
         <li class="active">
           <a href="rankmaster.php"><i class="fa fa-table"></i>
             <span>Point Rank Master Maintenance<br>
@@ -55,6 +54,13 @@ if($_SESSION['ses_status'] == "Administrator") {
           <a href="../UserMaster/user.php"><i class="fa fa-user"></i> 
             <span>User Master Maintenance<br>
               &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;การจัดการมาสเตอร์ผู้ใช้ 
+            </span>
+          </a>
+        </li>
+        <li>
+          <a href="../PointAdjustment/searchPoint.php"><i class="fa fa-database"></i>
+            <span>Point Adjustment Maintenance<br>
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;การแก้ไขคะแนน
             </span>
           </a>
         </li>
